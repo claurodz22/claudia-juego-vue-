@@ -1,18 +1,22 @@
 <script setup>
+import { useSlots } from 'vue';
 
-defineProps({
-  games: Array,
-})
+const slots = useSlots()
 
 
 </script>
 
-<template>
-  <section>
-    <h2>Recent games</h2>
-    <SharedSearch v-model="searchInput" @search="searchGames" />
-    <div class="game-layout">
 
+<template>
+  <!---- slots: permite a los componentes padres insertar 
+  contenido dinámicamente dentro de los componentes hijos.-->
+  <section>
+
+    <slot name="title" />
+
+    <h2 v-if="slots.title === undefined"> Juegos más recientes </h2>
+    <div class="game-layout">
+      <slot />
     </div>
   </section>
 </template>
@@ -22,5 +26,6 @@ defineProps({
   display: grid;
   gap: 2rem;
   margin: 1rem auto;
+  max-width: 90%;
 }
 </style>
