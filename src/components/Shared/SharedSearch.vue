@@ -4,39 +4,51 @@ import IconSearch from '../Icons/IconSearch.vue'
 
 const model = defineModel()
 
-const emit = defineEmits(['buscar'])
+const emit = defineEmits(['buscar', 'limpiar'])
 
 const isActive = ref(false)
 
-const onFocus = () =>{
+const onFocus = () => {
   isActive.value = true
 }
 
-const onBlur = () =>{
+const onBlur = () => {
   isActive.value = false
 }
 
-const searchClasses = computed(() => ({'search--active': isActive.value})) 
+const searchClasses = computed(() => ({'search--active': isActive.value}))
 
+const limpiarBusqueda = () => {
+  model.value = '' // Limpia el input
+  emit('limpiar') // Emite el evento para notificar al componente padre
+}
+
+const mostrarBotonLimpiar = computed(() => model.value && model.value.length > 0)
 </script>
 
 <template>
-  <!-- searchClasses activa que el borde de la barra de busqueda
-   se coloque azul focus / blur 
-   
-   recuerda usar eventos a discreció, puedes provocar sideEffects-->
-  <form @submit.prevent="() => {
-    emit('buscar')
-  }">
+  <form @submit.prevent="() => { emit('buscar') }">
     <div class="search" :class="searchClasses">
       <input
         v-model="model"
         class="search__input"
         type="text"
         placeholder="Buscar"
-        @focus ="onFocus"
-        @blur = "onBlur"
+        @focus="onFocus"
+        @blur="onBlur"
       />
+      
+      <!-- Botón X para limpiar la búsqueda -->
+      <button 
+        v-if="mostrarBotonLimpiar"
+        type="button" 
+        class="search__clear" 
+        @click="limpiarBusqueda"
+        aria-label="Limpiar búsqueda"
+      >
+        ×
+      </button>
+      
       <button class="search__submit" type="submit">
         <IconSearch />
       </button>
@@ -67,6 +79,25 @@ const searchClasses = computed(() => ({'search--active': isActive.value}))
 
 .search__input:focus {
   outline: none;
+}
+
+.search__clear {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background: transparent;
+  padding: 0.25rem;
+  margin-right: 0.25rem;
+  cursor: pointer;
+  color: #999;
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: bold;
+}
+
+.search__clear:hover {
+  color: #666;
 }
 
 .search__submit {

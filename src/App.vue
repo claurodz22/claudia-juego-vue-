@@ -4,10 +4,6 @@ import GameLayout from './components/Games/GameLayout.vue';
 import GameCard from './components/Games/GameCard.vue';
 import { onMounted, reactive, ref } from 'vue'
 
-// objetos reactivos --> manejar arrays en vue de manera
-// reactiva y profunda, se utilizan para detectar cambios
-// ejmp, en la response de la API
-
 const API_URL = "https://gamestreamapi.herokuapp.com/api/games"
 
 const state = reactive({
@@ -18,7 +14,6 @@ const state = reactive({
 
 const gamesView = ref([])
 
-
 const fetchGames = async () => {
   try {
     state.isLoading = true
@@ -27,7 +22,7 @@ const fetchGames = async () => {
     console.log(json)
     state.datos = json
     gamesView.value = json
-
+    
   } catch (error) {
     console.error(error)
     state.error = error
@@ -36,19 +31,25 @@ const fetchGames = async () => {
   }
 }
 
-onMounted(() => {
-  fetchGames()
-})
-
-const setGameView = (filteredGames) =>{
+// Función para manejar el evento setGameView
+const handleSetGameView = (filteredGames) => {
   gamesView.value = filteredGames
 }
 
+onMounted(() => {
+  fetchGames()
+})
 </script>
 
 <template>
   <LayoutHero />
-  <GameLayout :games="state.datos" @setGameView="gamesView = $event">
+  <GameLayout 
+    :games="state.datos" 
+    @setGameView="handleSetGameView"
+  >
+    <template #title>
+      <h3> Juegos actualizados</h3>
+    </template>
     <GameCard v-for="game in gamesView" :key="game.title" :game="game" />
   </GameLayout>
   <main></main>
