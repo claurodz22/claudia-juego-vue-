@@ -1,18 +1,41 @@
 <script setup>
+import { ref, computed } from 'vue';
 import IconSearch from '../Icons/IconSearch.vue'
 
 const model = defineModel()
 
+const emit = defineEmits(['buscar'])
+
+const isActive = ref(false)
+
+const onFocus = () =>{
+  isActive.value = true
+}
+
+const onBlur = () =>{
+  isActive.value = false
+}
+
+const searchClasses = computed(() => ({'search--active': isActive.value})) 
+
 </script>
 
 <template>
-  <form>
-    <div class="search">
+  <!-- searchClasses activa que el borde de la barra de busqueda
+   se coloque azul focus / blur 
+   
+   recuerda usar eventos a discreció, puedes provocar sideEffects-->
+  <form @submit.prevent="() => {
+    emit('buscar')
+  }">
+    <div class="search" :class="searchClasses">
       <input
         v-model="model"
         class="search__input"
         type="text"
         placeholder="Buscar"
+        @focus ="onFocus"
+        @blur = "onBlur"
       />
       <button class="search__submit" type="submit">
         <IconSearch />

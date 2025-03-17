@@ -2,7 +2,7 @@
 import LayoutHero from './components/Layout/LayoutHero.vue';
 import GameLayout from './components/Games/GameLayout.vue';
 import GameCard from './components/Games/GameCard.vue';
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 
 // objetos reactivos --> manejar arrays en vue de manera
 // reactiva y profunda, se utilizan para detectar cambios
@@ -16,6 +16,9 @@ const state = reactive({
   datos: []
 })
 
+const gamesView = ref([])
+
+
 const fetchGames = async () => {
   try {
     state.isLoading = true
@@ -23,6 +26,8 @@ const fetchGames = async () => {
     const json = await response.json()
     console.log(json)
     state.datos = json
+    gamesView.value = json
+
   } catch (error) {
     console.error(error)
     state.error = error
@@ -35,15 +40,16 @@ onMounted(() => {
   fetchGames()
 })
 
+const setGameView = (filteredGames) =>{
+  gamesView.value = filteredGames
+}
+
 </script>
 
 <template>
   <LayoutHero />
-  <GameLayout>
-    <template #title>
-      <h3> Juegos actualizados</h3>
-    </template>
-    <GameCard v-for="game in state.datos" :key="game.title" :game="game" />
+  <GameLayout :games="state.datos" @setGameView="gamesView = $event">
+    <GameCard v-for="game in gamesView" :key="game.title" :game="game" />
   </GameLayout>
   <main></main>
 </template>
