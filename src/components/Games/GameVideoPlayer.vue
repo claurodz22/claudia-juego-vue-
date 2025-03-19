@@ -1,10 +1,20 @@
 <script setup>
 
+import { ref, onMounted } from 'vue'
+
+const videoRef = ref(null)
+
 defineProps({
   video: {
     type: String,
     required: true,
   },
+})
+
+// esto es para que se ejecute el video de 
+// manera automatica al momento de ver video
+onMounted(() =>{
+  videoRef.value.play()
 })
 
 </script>
