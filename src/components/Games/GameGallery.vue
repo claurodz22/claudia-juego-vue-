@@ -10,6 +10,12 @@ const props = defineProps({
   },
 })
 
+// componentes dinamicos iconos
+const iconos = {
+  'left': IconChevronLeft,
+  'right': IconChevronRight
+}
+
 const currentIndex = ref(0)
 
 function nextImage() {
@@ -25,10 +31,11 @@ function prevImage() {
   <div class="game-gallery">
     <div class="game-gallery__controls">
       <button class="game-gallery__button game-gallery__button--left" @click="prevImage">
-        <IconChevronLeft />
+        <component :is="iconos['left']" >   </component>
       </button>
       <button class="game-gallery__button game-gallery__button--right" @click="nextImage">
-        <IconChevronRight />
+        <!-- componentes dinamicos tag component-->
+        <component :is="iconos['right']" >   </component>
       </button>
     </div>
 
